@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -56,6 +58,22 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Meeting::class, mappedBy="organisedBy", orphanRemoval=true)
+     */
+    private $organiserOf;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Meeting::class, inversedBy="participants")
+     */
+    private $meetings;
+
+    public function __construct()
+    {
+        $this->organiserOf = new ArrayCollection();
+        $this->meetings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -180,6 +198,60 @@ class User implements UserInterface
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getOrganiserOf(): Collection
+    {
+        return $this->organiserOf;
+    }
+
+    public function addOrganiserOf(Meeting $organiserOf): self
+    {
+        if (!$this->organiserOf->contains($organiserOf)) {
+            $this->organiserOf[] = $organiserOf;
+            $organiserOf->setOrganisedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganiserOf(Meeting $organiserOf): self
+    {
+        if ($this->organiserOf->removeElement($organiserOf)) {
+            // set the owning side to null (unless already changed)
+            if ($organiserOf->getOrganisedBy() === $this) {
+                $organiserOf->setOrganisedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    public function addMeeting(Meeting $meeting): self
+    {
+        if (!$this->meetings->contains($meeting)) {
+            $this->meetings[] = $meeting;
+        }
+
+        return $this;
+    }
+
+    public function removeMeeting(Meeting $meeting): self
+    {
+        $this->meetings->removeElement($meeting);
 
         return $this;
     }
