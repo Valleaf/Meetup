@@ -8,7 +8,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private $passwordEncoder;
 
@@ -30,7 +30,9 @@ class UserFixtures extends Fixture
         $user->setLastName('TR');
         $user->setEmail('Val@gmail.com');
         $user->setPhone($int);
+        $user->setIsAdmin(true);
         $user->setIsActive(true);
+        $user->setCampus($this->getReference(CampusFixtures::FIRST_CAMPUS));
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user,
             'tototo'
@@ -47,6 +49,8 @@ class UserFixtures extends Fixture
             $user->setEmail('Val'.$int.'@gmail.com');
             $user->setPhone($int);
             $user->setIsActive(true);
+            $user->setIsAdmin(false);
+            $user->setCampus($this->getReference(CampusFixtures::FIRST_CAMPUS));
             $user->setPassword($this->passwordEncoder->encodePassword(
                 $user,
                 'tototo'
@@ -55,5 +59,10 @@ class UserFixtures extends Fixture
         }
         $manager->flush();
         $this->setReference(self::FIRST_USER,$user);
+    }
+
+    public function getDependencies()
+    {
+        return [CampusFixtures::class];
     }
 }

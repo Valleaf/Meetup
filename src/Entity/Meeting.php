@@ -49,10 +49,6 @@ class Meeting
      */
     private $information;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $state;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="organiserOf")
@@ -64,6 +60,24 @@ class Meeting
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="meetings")
      */
     private $participants;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="meetings")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $campus;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=State::class, inversedBy="meetings")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Place::class, inversedBy="meetings")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $place;
 
     public function __construct()
     {
@@ -147,17 +161,6 @@ class Meeting
         return $this;
     }
 
-    public function getState(): ?string
-    {
-        return $this->state;
-    }
-
-    public function setState(string $state): self
-    {
-        $this->state = $state;
-
-        return $this;
-    }
 
     public function getOrganisedBy(): ?User
     {
@@ -194,6 +197,42 @@ class Meeting
         if ($this->participants->removeElement($participant)) {
             $participant->removeMeeting($this);
         }
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    public function getStatus(): ?State
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?State $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getPlace(): ?Place
+    {
+        return $this->place;
+    }
+
+    public function setPlace(?Place $place): self
+    {
+        $this->place = $place;
 
         return $this;
     }

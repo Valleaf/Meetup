@@ -69,6 +69,17 @@ class User implements UserInterface
      */
     private $meetings;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isAdmin;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="students")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $campus;
+
     public function __construct()
     {
         $this->organiserOf = new ArrayCollection();
@@ -102,8 +113,10 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        // guarantee every user at least has ROLE_USER
-       return ['ROLE_USER'];
+        if ($this->getIsAdmin()) {
+            return ['ROLE_ADMIN'];
+        }
+         else return ['ROLE_USER'];
     }
 
 
@@ -252,6 +265,30 @@ class User implements UserInterface
     public function removeMeeting(Meeting $meeting): self
     {
         $this->meetings->removeElement($meeting);
+
+        return $this;
+    }
+
+    public function getIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
 
         return $this;
     }

@@ -23,7 +23,9 @@ class MeetingsFixtures extends Fixture implements DependentFixtureInterface
             $dateLater = new \DateTime('2021-'.$month.'-'.$day);
             $dateLater->modify('-1 day');
             $organizer = $this->getReference(UserFixtures::FIRST_USER);
-
+            $campus = $this->getReference(CampusFixtures::FIRST_CAMPUS);
+            $status = $this->getReference(StateFixtures::FIRST_STATE);
+            $place = $this->getReference(PlaceFixtures::FIRST_PLACE);
 
             $meet->setName('Reunion'.$int)
                  ->setTimeStarting($date)
@@ -31,7 +33,9 @@ class MeetingsFixtures extends Fixture implements DependentFixtureInterface
                 ->setRegisterUntil($dateLater)
                 ->setMaxParticipants(10)
                 ->setInformation('lorem ipsum blablabduudkjsadhasd blablabduudkjsadhasdblablabduudkjsadhasd blablabduudkjsadhasd')
-                ->setState('Actif')
+                ->setCampus($campus)
+                ->setPlace($place)
+                ->setStatus($status)
                 ->setOrganisedBy($organizer);
             $manager->persist($meet);
         }
@@ -41,6 +45,6 @@ class MeetingsFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies()
     {
-        return [UserFixtures::class];
+        return [UserFixtures::class,CampusFixtures::class,StateFixtures::class,PlaceFixtures::class];
     }
 }

@@ -84,3 +84,25 @@ body{
 .profile-display-button{
     align-self: center;
 }
+
+
+/* MEETINGS CSS */
+
+.app-meeting-list{
+    padding: 5%;
+    margin: 3%;
+}
+
+.app-meeting-information{
+    border-style: solid;
+    border-color: antiquewhite;
+    border-width: 0.3rem;
+    border-radius: 2%;
+    padding: 2%;
+}
+
+.app-meeting-choice{
+    border-width: 1rem;
+    border-radius: 2%;
+
+}
